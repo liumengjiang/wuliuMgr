@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.zl.mapper.OrderUserMapper">
+
+
+	<select id="queryByUsernameAndPassword"  resultType="OderUser">
+		select
+		<include refid="selectColumn" />
+		from OrderUser
+		where
+		username = #{username}
+		and password = #{password}
+
+	</select>
+		<select id="queryUsername"  resultType="OderUser">
+		select
+		<include refid="selectColumn" />
+		from OrderUser
+		where
+		username = #{username}
+		
+
+	</select>
+	<sql id="selectColumn">
+		id,username,password,name,sex,age,state,registtime
+	</sql>
+	<insert id="regist" parameterType="OderUser">
+	insert into OrderUser (id,username,password,name,sex,age)
+	values (idup.nextval,#{username},#{password},#{name},#{sex},#{age})
+	</insert>
+</mapper>

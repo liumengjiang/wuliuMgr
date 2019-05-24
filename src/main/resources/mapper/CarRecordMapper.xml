@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- <resultMap type="CarRecord" id="allMap"> <association property="oderUser" 
+	column="" javaType="" jdbcType="" select=""></association> </resultMap> -->
+<mapper namespace="com.zl.mapper.CarRecordMapper">
+	<select id="getAllCarRecord" resultType="CarRecord">
+
+		SELECT
+		waybillid,recorddate,dname,carnumber,pickupplace,destination,customname,customphone,cost,cs.state,ou.name
+		FROM car_record cr JOIN car_state CS ON cr.cid=cs.cid JOIN driver d ON
+		d.did= cs.did JOIN
+		truck t ON t.tid=cs.tid join orderuser ou on
+		ou.id=cr.oid
+	</select>
+
+
+	<select id="queryRecordById" resultType="CarRecord">
+
+		SELECT
+		waybillid,recorddate,dname,carnumber,pickupplace,destination,customname,customphone,cost,cs.state,ou.name
+		FROM car_record cr JOIN car_state CS ON cr.cid=cs.cid JOIN driver d ON
+		d.did= cs.did JOIN
+		truck t ON t.tid=cs.tid join orderuser ou on
+		ou.id=cr.oid where
+		waybillid=#{waybillid}
+
+	</select>
+	<select id="queryAllDriver" resultType="driver">
+		select * from driver
+	</select>
+
+	<select id="queryAllTruck" resultType="truck">
+		select * from truck
+	</select>
+	<insert id="addCarRecord" parameterType="CarRecord">
+		insert into Car_Record
+		values
+		(idup.nextval,#{recorddate},#{pickupplace},#{destination},#{customname},#{customphone},#{cost},#{cid},#{oid})
+
+
+	</insert>
+	<insert id="addCarState" parameterType="CarRecord">
+		insert into Car_State
+		values
+		(#{cid},0,#{CarRecord.truck.id},#{CarRecord.driver.id})
+	</insert>
+	<update id="updateCarRecord" parameterType="CarRecord">
+		update Car_Record set
+		recorddate=#{recorddate},pickupplace=#{pickupplace},destination=#{destination},
+		customname=#{customname},customphone=#{customphone},cost=#{cost},cid=#{cid}
+		where waybillid=#{waybillid}
+	</update>
+	<sql id="insertColumn">
+		waybillid,recorddate,pickupplace,destination,customname,customphone,cost,cid,oid
+	</sql>
+
+	<select id="getDates" parameterType="CarRecordC" statementType="CALLABLE">
+		{call proc_query_car_page(
+		#{pageIndex, jdbcType=INTEGER,mode=IN},
+		#{pageSize, jdbcType=INTEGER, mode=IN},
+		#{waybillid,jdbcType=BIGINT, mode=IN},
+		#{dname, jdbcType=VARCHAR, mode=IN},
+		#{startDate, jdbcType=DATE, mode=IN},
+		#{endDate, jdbcType=DATE,mode=IN},
+		#{count, jdbcType=INTEGER, mode=OUT},
+		#{carrecord,jdbcType=CURSOR,javaType=ResultSet, mode=OUT,resultMap=RMap}
+		)}
+
+
+
+	</select>
+
+	<resultMap type="CarRecord" id="RMap">
+	
+	
+	</resultMap>
+	<select id="getResult" resultType="CarRecord">
+			SELECT
+		waybillid,recorddate,dname,carnumber,pickupplace,destination,customname,customphone,cost,cs.state,ou.name
+		FROM car_record cr JOIN car_state CS ON cr.cid=cs.cid JOIN driver d ON
+		d.did= cs.did JOIN
+		truck t ON t.tid=cs.tid join orderuser ou on
+		ou.id=cr.oid where
+		waybillid=#{waybillid}
+	</select>
+
+</mapper>
